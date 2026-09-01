@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>GarageMind — Automotive Maintenance Assistant</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Ask maintenance questions about your car and get answers grounded in your vehicle's official owner's manual, always cited.">
+<link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app-shell">
+  <div class="panel">
+
+    <header class="header">
+      <div class="brand-row">
+        <img class="logo" src="assets/logo.svg" alt="GarageMind" width="38" height="38">
+        <div class="brand-text">
+          <div class="brand-title">GarageMind</div>
+          <div class="brand-subtitle">Answers grounded in your vehicle's official manual — always cited.</div>
+        </div>
+      </div>
+
+      <div class="chip-wrap">
+        <button class="vehicle-chip" id="vehicleChip" type="button" aria-haspopup="true" aria-expanded="false">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="6" rx="2" stroke="#1F3A5F" stroke-width="1.7"/><path d="M6 11l2-4h8l2 4" stroke="#1F3A5F" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7.5" cy="17.5" r="1.3" fill="#1F3A5F"/><circle cx="16.5" cy="17.5" r="1.3" fill="#1F3A5F"/></svg>
+          <span id="chipLabel">Select your vehicle</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#6A7480" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+
+        <div class="selector-panel" id="selectorPanel" hidden>
+          <div class="selector-header">
+            <button class="selector-back" id="selectorBack" type="button" hidden aria-label="Back">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <span class="selector-title" id="selectorTitle">Select make</span>
+          </div>
+          <div class="selector-list gm-scroll" id="selectorList"></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="messages gm-scroll" id="messages">
+      <div class="empty-state" id="emptyState">
+        <img class="empty-badge" src="assets/logo.svg" alt="" width="56" height="56">
+        <h1>Ask anything about your car</h1>
+        <p>Get straight answers on maintenance and how things work — pulled from your vehicle's official owner's manual, with the source shown every time.</p>
+        <div class="start-cards">
+          <button class="start-card" id="pickVehicleCard" type="button">
+            <div class="start-card-icon start-card-icon--blue">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="6" rx="2" stroke="#1F3A5F" stroke-width="1.7"/><path d="M6 11l2-4h8l2 4" stroke="#1F3A5F" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7.5" cy="17.5" r="1.3" fill="#1F3A5F"/><circle cx="16.5" cy="17.5" r="1.3" fill="#1F3A5F"/></svg>
+            </div>
+            <div class="start-card-title">Pick your vehicle</div>
+            <div class="start-card-desc">Set make, model &amp; year for answers scoped to your car.</div>
+          </button>
+          <button class="start-card" id="justAskCard" type="button">
+            <div class="start-card-icon start-card-icon--green">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H8l-4 4z" stroke="#2E5E4E" stroke-width="1.7" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="start-card-title">Just ask</div>
+            <div class="start-card-desc">Type your question — we'll ask for your car only if we need it.</div>
+          </button>
+        </div>
+      </div>
+      <div class="message-list" id="messageList"></div>
+    </main>
+
+    <footer class="composer">
+      <div class="example-chips" id="exampleChips"></div>
+      <div class="input-row">
+        <textarea id="input" rows="1" placeholder="Ask a maintenance question…"></textarea>
+        <button class="send-btn" id="sendBtn" type="button" disabled aria-label="Send">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h13M13 6l6 6-6 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <div class="footer-note">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 4.5-3 7.7-7 9-4-1.3-7-4.5-7-9V6l7-3z" stroke="#9AA4AE" stroke-width="1.6"/><path d="M9 12l2 2 4-4" stroke="#9AA4AE" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Grounded in your vehicle's official manual · every answer cites its source</span>
+      </div>
+    </footer>
+
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

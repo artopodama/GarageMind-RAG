@@ -1,0 +1,13 @@
+{
+  "name": "rag-automotive-mddb",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "description": "MarkdownDB indexer side-process for the RAG maintenance assistant",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "dependencies": {
+    "mddb": "^0.7.0"
+  }
+}

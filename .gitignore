@@ -1,0 +1,41 @@
+# Keep manual dataset
+# data/manuals/ is committed
+
+# Generated indexes - do not commit
+data/stores/
+data/stores_backup/
+
+# Temporary crawler state
+data/.crawl_state.jsonl
+
+# Archives
+data/*.zip
+
+# Secrets
+.env
+**/.env
+!**/.env.example
+
+# Python
+.venv/
+**/.venv/
+venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+*.egg-info/
+
+# Node
+node_modules/
+
+# Generated database/index files
+*.db
+*.pkl
+
+# Evaluation temp files
+eval/_ragas_records.json
+
+# OS
+.DS_Store
+**/.DS_Store
+Thumbs.db

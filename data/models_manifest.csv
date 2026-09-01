@@ -1,0 +1,131 @@
+﻿brand,make,model_name,model_slug,variant_count,source_url,source_status,catalog_only,extra_ford
+ford,Ford,B-Max,b-max,1,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+ford,Ford,Bronco,bronco,1,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+ford,Ford,C-Max,c-max,2,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+ford,Ford,Capri,capri,1,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+ford,Ford,Contour,contour,1,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+ford,Ford,Crown Victoria,crown-victoria,1,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+ford,Ford,Ecosport,ecosport,1,https://www.mycarusermanual.com/ford/ecosport,directly-listed-on-current-english-brand-page,True,False
+ford,Ford,Edge,edge,2,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+ford,Ford,Escape,escape,4,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+ford,Ford,Escort,escort,1,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+ford,Ford,Everest,everest,3,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+ford,Ford,Expedition,expedition,3,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+ford,Ford,Explorer,explorer,4,https://www.mycarusermanual.com/ford/explorer,directly-listed-on-current-english-brand-page,True,False
+ford,Ford,F 150,f-150,4,https://www.mycarusermanual.com/ford/f-150,directly-listed-on-current-english-brand-page,True,False
+ford,Ford,Fiesta,fiesta,3,https://www.mycarusermanual.com/ford/fiesta,directly-listed-on-current-english-brand-page,True,False
+ford,Ford,Flex,flex,1,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+ford,Ford,Focus,focus,3,https://www.mycarusermanual.com/ford/focus,directly-listed-on-current-english-brand-page,True,False
+ford,Ford,Freestyle,freestyle,1,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+ford,Ford,Fusion,fusion,1,https://www.mycarusermanual.com/ford/fusion,directly-listed-on-current-english-brand-page,True,False
+ford,Ford,GT,gt,2,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+ford,Ford,Galaxy,galaxy,3,https://www.mycarusermanual.com/ford/galaxy,directly-listed-on-current-english-brand-page,True,False
+ford,Ford,Granada,granada,1,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+ford,Ford,Ka,ka,2,https://www.mycarusermanual.com/ford/ka,directly-listed-on-current-english-brand-page,True,False
+ford,Ford,Kuga,kuga,3,https://www.mycarusermanual.com/ford/kuga,directly-listed-on-current-english-brand-page,True,False
+ford,Ford,Maverick,maverick,1,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+ford,Ford,Mondeo,mondeo,3,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+ford,Ford,Mustang,mustang,3,https://www.mycarusermanual.de/de/ford,mentioned-on-localized-ford-page-compatibility-seed,True,True
+ford,Ford,Probe,probe,1,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+ford,Ford,Puma,puma,2,https://www.mycarusermanual.com/ford/puma,directly-listed-on-current-english-brand-page,True,False
+ford,Ford,Ranger,ranger,3,https://www.mycarusermanual.de/de/ford,mentioned-on-localized-ford-page-compatibility-seed,True,True
+ford,Ford,S-Max,s-max,2,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+ford,Ford,Sierra,sierra,1,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+ford,Ford,Taurus,taurus,3,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+ford,Ford,Territory,territory,2,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+ford,Ford,Thunderbird,thunderbird,1,https://www.mycarusermanual.de/de/ford,mentioned-on-localized-ford-page-compatibility-seed,True,True
+ford,Ford,Tourneo Connect,tourneo-connect,3,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+ford,Ford,Tourneo Custom,tourneo-custom,2,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+ford,Ford,Transit,transit,3,https://www.mycarusermanual.de/de/ford,mentioned-on-localized-ford-page-compatibility-seed,True,True
+ford,Ford,Transit Connect,transit-connect,2,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+ford,Ford,Transit Custom,transit-custom,2,https://www.mycarusermanual.com/ford,additional-ford-compatibility-seed-not-directly-listed-on-current-english-page,True,True
+honda,Honda,Accord,accord,5,https://www.mycarusermanual.com/honda/accord,directly-listed-on-current-english-brand-page,True,False
+honda,Honda,Civic,civic,1,https://www.mycarusermanual.com/honda/civic,directly-listed-on-current-english-brand-page,True,False
+honda,Honda,Cr-V,cr-v,6,https://www.mycarusermanual.com/honda/cr-v,directly-listed-on-current-english-brand-page,True,False
+honda,Honda,Hr-V,hr-v,3,https://www.mycarusermanual.com/honda/hr-v,directly-listed-on-current-english-brand-page,True,False
+honda,Honda,Jazz,jazz,4,https://www.mycarusermanual.com/honda/jazz,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,4 Runner,4-runner,3,https://www.mycarusermanual.com/toyota/4-runner,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,86,86,2,https://www.mycarusermanual.com/toyota/86,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,Alphard,alphard,4,https://www.mycarusermanual.com/toyota/alphard,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,Aurion,aurion,2,https://www.mycarusermanual.com/toyota/aurion,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,Auris,auris,2,https://www.mycarusermanual.com/toyota/auris,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,Avalon,avalon,4,https://www.mycarusermanual.com/toyota/avalon,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,Avanza,avanza,3,https://www.mycarusermanual.com/toyota/avanza,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,Avensis,avensis,3,https://www.mycarusermanual.com/toyota/avensis,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,Aygo,aygo,2,https://www.mycarusermanual.com/toyota/aygo,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,C-Hr,c-hr,2,https://www.mycarusermanual.com/toyota/c-hr,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,Caldina,caldina,3,https://www.mycarusermanual.com/toyota/caldina,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,Camry,camry,5,https://www.mycarusermanual.com/toyota/camry,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,Celica,celica,1,https://www.mycarusermanual.com/toyota/celica,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,Corolla,corolla,4,https://www.mycarusermanual.com/toyota/corolla,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,Highlander,highlander,4,https://www.mycarusermanual.com/toyota/highlander,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,Hilux,hilux,2,https://www.mycarusermanual.com/toyota/hilux,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,Land Cruiser,land-cruiser,3,https://www.mycarusermanual.com/toyota/land-cruiser,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,Prius,prius,5,https://www.mycarusermanual.com/toyota/prius,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,Rav4,rav4,4,https://www.mycarusermanual.com/toyota/rav4,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,Sequoia,sequoia,3,https://www.mycarusermanual.com/toyota/sequoia,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,Sienna,sienna,4,https://www.mycarusermanual.com/toyota/sienna,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,Supra,supra,1,https://www.mycarusermanual.com/toyota/supra,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,Tacoma,tacoma,4,https://www.mycarusermanual.com/toyota/tacoma,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,Tundra,tundra,3,https://www.mycarusermanual.com/toyota/tundra,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,Yaris,yaris,4,https://www.mycarusermanual.com/toyota/yaris,directly-listed-on-current-english-brand-page,True,False
+toyota,Toyota,bZ4X,bz4x,1,https://www.mycarusermanual.com/toyota/bz4x,directly-listed-on-current-english-brand-page,True,False
+volvo,Volvo,XC90,xc90,2,https://www.mycarusermanual.com/volvo/xc90,directly-listed-on-current-english-brand-page,True,False
+volvo,Volvo,Xc70,xc70,2,https://www.mycarusermanual.com/volvo/xc70,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Amarok,amarok,2,https://www.mycarusermanual.com/vw/amarok,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Arteon,arteon,1,https://www.mycarusermanual.com/vw/arteon,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Atlas,atlas,1,https://www.mycarusermanual.com/vw/atlas,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Beetle,beetle,1,https://www.mycarusermanual.com/vw/beetle,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Caddy,caddy,3,https://www.mycarusermanual.com/vw/caddy,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,California,california,3,https://www.mycarusermanual.com/vw/california,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Caravelle,caravelle,2,https://www.mycarusermanual.com/vw/caravelle,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Cc,cc,1,https://www.mycarusermanual.com/vw/cc,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Crafter,crafter,2,https://www.mycarusermanual.com/vw/crafter,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Derby,derby,1,https://www.mycarusermanual.com/vw/derby,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,E Golf,e-golf,1,https://www.mycarusermanual.com/vw/e-golf,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Fox,fox,1,https://www.mycarusermanual.com/vw/fox,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Gol,gol,2,https://www.mycarusermanual.com/vw/gol,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Golf,golf,4,https://www.mycarusermanual.com/vw/golf,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,ID. Buzz,id-buzz,1,https://www.mycarusermanual.com/vw/id-buzz,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,ID. Buzz Cargo,id-buzz-cargo,1,https://www.mycarusermanual.com/vw/id-buzz-cargo,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,ID.3,id3,1,https://www.mycarusermanual.com/vw/id3,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,ID.4,id4,1,https://www.mycarusermanual.com/vw/id4,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,ID.5,id5,1,https://www.mycarusermanual.com/vw/id5,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,ID.6,id6,1,https://www.mycarusermanual.com/vw/id6,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,ID.7,id7,1,https://www.mycarusermanual.com/vw/id7,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Jetta,jetta,4,https://www.mycarusermanual.com/vw/jetta,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,LT,lt,1,https://www.mycarusermanual.com/vw/lt,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Lamando,lamando,2,https://www.mycarusermanual.com/vw/lamando,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Lavida,lavida,3,https://www.mycarusermanual.com/vw/lavida,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Lupo,lupo,1,https://www.mycarusermanual.com/vw/lupo,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Magotan,magotan,2,https://www.mycarusermanual.com/vw/magotan,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Multivan,multivan,3,https://www.mycarusermanual.com/vw/multivan,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Parati,parati,1,https://www.mycarusermanual.com/vw/parati,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Passat,passat,5,https://www.mycarusermanual.com/vw/passat,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Phaeton,phaeton,1,https://www.mycarusermanual.com/vw/phaeton,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Phideon,phideon,1,https://www.mycarusermanual.com/vw/phideon,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Polo,polo,3,https://www.mycarusermanual.com/vw/polo,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Routan,routan,1,https://www.mycarusermanual.com/vw/routan,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Santana,santana,1,https://www.mycarusermanual.com/vw/santana,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Saveiro,saveiro,1,https://www.mycarusermanual.com/vw/saveiro,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Scirocco,scirocco,1,https://www.mycarusermanual.com/vw/scirocco,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Sharan,sharan,2,https://www.mycarusermanual.com/vw/sharan,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,T Cross,t-cross,1,https://www.mycarusermanual.com/vw/t-cross,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,T-Roc,t-roc,1,https://www.mycarusermanual.com/vw/t-roc,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,T1,t1,1,https://www.mycarusermanual.com/vw/t1,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,T2,t2,1,https://www.mycarusermanual.com/vw/t2,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,T3,t3,1,https://www.mycarusermanual.com/vw/t3,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,T4,t4,1,https://www.mycarusermanual.com/vw/t4,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,T5,t5,1,https://www.mycarusermanual.com/vw/t5,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,T6,t6,1,https://www.mycarusermanual.com/vw/t6,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,T7,t7,1,https://www.mycarusermanual.com/vw/t7,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Taigo,taigo,1,https://www.mycarusermanual.com/vw/taigo,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Taos,taos,1,https://www.mycarusermanual.com/vw/taos,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Tayron,tayron,1,https://www.mycarusermanual.com/vw/tayron,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Tiguan,tiguan,3,https://www.mycarusermanual.com/vw/tiguan,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Touareg,touareg,3,https://www.mycarusermanual.com/vw/touareg,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Touran,touran,2,https://www.mycarusermanual.com/vw/touran,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Transporter,transporter,2,https://www.mycarusermanual.com/vw/transporter,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Up,up,1,https://www.mycarusermanual.com/vw/up,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Vento,vento,1,https://www.mycarusermanual.com/vw/vento,directly-listed-on-current-english-brand-page,True,False
+vw,Volkswagen,Virtus,virtus,1,https://www.mycarusermanual.com/vw/virtus,directly-listed-on-current-english-brand-page,True,False
