@@ -1,259 +1,638 @@
-# GarageMind — RAG Automotive Maintenance Assistant
+# GarageMind-RAG
 
-A Retrieval-Augmented Generation (RAG) system that answers vehicle maintenance
-questions in natural language by grounding an open-weight LLM in a corpus of
-owner's manuals. Every answer is drawn **only** from retrieved manual passages,
-**cites its source**, and the system **refuses** rather than guess when the
-manual does not contain the information — especially for safety-critical values
-(tyre pressure, torque, fluid capacities/types).
+Το **GarageMind-RAG** είναι ένα σύστημα Retrieval-Augmented Generation (RAG) για αναζήτηση και απάντηση ερωτήσεων πάνω σε πληροφορίες σχετικές με αυτοκίνητα.
 
-Reference implementation for the thesis
-**"RAG-Enhanced LLMs for Automotive Maintenance Support Systems."**
+Το έργο συνδυάζει **σημασιολογική αναζήτηση με embeddings**, **λεξιλογική αναζήτηση BM25**, **cross-encoder reranking** και ένα Large Language Model που εκτελείται τοπικά μέσω **Ollama**, με στόχο την ανάκτηση σχετικών πληροφοριών και τη δημιουργία απαντήσεων βασισμένων σε συγκεκριμένες πηγές.
 
-> **Runs fully locally, no API keys.** Generation uses a local **Ollama** model
-> (`qwen2.5:7b-instruct`) via its OpenAI-compatible endpoint. To use the hosted
-> DeepSeek model instead, just point `.env` at it (see below).
+Το σύστημα αναπτύχθηκε ως ακαδημαϊκό έργο, με έμφαση στην αρθρωτή αρχιτεκτονική, την τοπική εκτέλεση μοντέλων, την ποιότητα της ανάκτησης πληροφορίας και την αναπαραγωγιμότητα των αποτελεσμάτων.
 
 ---
 
-## Architecture at a glance
+## Περιγραφή του συστήματος
 
+Τα παραδοσιακά Large Language Models δημιουργούν απαντήσεις βασιζόμενα κυρίως στη γνώση που απέκτησαν κατά την εκπαίδευσή τους.
+
+Αυτό μπορεί να δημιουργήσει προβλήματα όταν μια ερώτηση απαιτεί πληροφορίες από μια συγκεκριμένη τεχνική βάση γνώσης.
+
+Το GarageMind χρησιμοποιεί την αρχιτεκτονική Retrieval-Augmented Generation.
+
+Πριν δημιουργηθεί η τελική απάντηση, το σύστημα:
+
+1. αναζητά σχετικές πληροφορίες στη βάση γνώσης,
+2. επιλέγει τα πιο σχετικά αποσπάσματα,
+3. τα δίνει ως context στο γλωσσικό μοντέλο,
+4. και στη συνέχεια δημιουργεί την τελική απάντηση.
+
+Η συνολική διαδικασία περιλαμβάνει:
+
+1. Εισαγωγή εγγράφων σχετικών με αυτοκίνητα
+2. Ανάλυση και κανονικοποίηση του κειμένου
+3. Διαχωρισμό των εγγράφων σε μικρότερα τμήματα
+4. Δημιουργία embeddings
+5. Δημιουργία BM25 index
+6. Υβριδική ανάκτηση πληροφορίας
+7. Reciprocal Rank Fusion
+8. Cross-encoder reranking
+9. Έλεγχο εμπιστοσύνης των αποτελεσμάτων
+10. Δημιουργία απάντησης μέσω τοπικού LLM
+
+---
+
+## Αρχιτεκτονική
+
+```mermaid
+flowchart TD
+    A[Έγγραφα Αυτοκινήτων] --> B[Parsing / Μετατροπή σε Markdown]
+    B --> C[Chunking]
+
+    C --> D[Dense Embeddings]
+    C --> E[BM25 Index]
+
+    D --> F[Chroma Vector Store]
+    F --> G[Dense Retrieval]
+    E --> H[BM25 Retrieval]
+
+    G --> I[Hybrid Retrieval / RRF]
+    H --> I
+
+    I --> J[Cross-Encoder Reranking]
+    J --> K[Confidence / Refusal Check]
+
+    K --> L[Qwen 2.5 μέσω Ollama]
+    L --> M[Τελική Απάντηση]
 ```
-crawl HTML (mycarusermanual.com)  ->  Markdown + YAML front-matter
-   data/manuals/<brand>/<model>/<variant>/<section>/<sub>.md   (already crawled: 51k files)
 
-   ├─ manifest.py   derive make / year-range / manual_id from the path
-   │                -> data/stores/manuals.sqlite         (metadata scoping bridge)
-   └─ build_index.py  chunk (Markdown-structure + size-bounded) -> BGE embeddings
-                    -> Chroma (dense)  +  BM25 (lexical)   in data/stores/
+---
 
-question + (make, model, year)
-   -> resolve_manual()  -> manual_id                       (scope to the right vehicle)
-   -> hybrid retrieve   dense + BM25, fused with RRF, filtered by manual_id
-   -> cross-encoder rerank (bge-reranker-v2-m3)
-   -> refuse if top score < threshold OR the context doesn't answer
-   -> else  local LLM (Ollama)  grounded + cited  ->  answer
+## Κύριες Τεχνολογίες
+
+Η τρέχουσα υλοποίηση χρησιμοποιεί:
+
+* **Python**
+* **FastAPI**
+* **Ollama**
+* **Qwen 2.5 7B**
+* **Hugging Face Transformers**
+* **BAAI/bge-large-en-v1.5**
+* **BAAI/bge-reranker-v2-m3**
+* **ChromaDB**
+* **BM25**
+* **LlamaIndex**
+* **Sentence Transformers**
+* **HTML / CSS / JavaScript**
+
+Το σύστημα μπορεί να λειτουργήσει τοπικά χωρίς να απαιτεί εμπορικό API για Large Language Model.
+
+---
+
+# Pipeline Ανάκτησης Πληροφορίας
+
+Το GarageMind χρησιμοποιεί υβριδική αρχιτεκτονική ανάκτησης και δεν βασίζεται αποκλειστικά σε vector similarity.
+
+## 1. Dense Retrieval
+
+Τα έγγραφα μετατρέπονται σε πυκνές διανυσματικές αναπαραστάσεις χρησιμοποιώντας το μοντέλο:
+
+```text
+BAAI/bge-large-en-v1.5
 ```
 
-- **Metadata bridge (`app/ingest/manifest.py`):** the crawled front-matter has
-  `brand`/`model`/`variant` but no `make`/`year`/`manual_id` — which retrieval
-  scopes on. This derives them deterministically from the on-disk path
-  (`brand`→`make` alias, year range parsed from the variant) into
-  `data/stores/manuals.sqlite`. `app/retrieval/metadata.py` resolves
-  `(make, model, year)` → `manual_id` against it. (Replaces the unverified
-  MarkdownDB-schema guess; `mddb/` is kept but optional.)
-- **Indexing (`app/ingest/build_index.py`):** reads `data/manuals/` **in place**
-  (no copy of the 18 GB tree), injects the scope metadata into every chunk, and
-  builds Chroma + BM25 **brand-by-brand, resumably** (a finished brand is
-  skipped on re-run; deterministic content-hash chunk ids; disk guard).
-- **Retrieval:** hybrid dense + BM25 with Reciprocal Rank Fusion, scoped by
-  `manual_id`, then a cross-encoder reranker (`app/retrieval/rerank.py`, via
-  sentence-transformers `CrossEncoder`).
-- **Generation (`app/generate/answer.py`):** provider-agnostic OpenAI client →
-  local Ollama by default. Grounds every claim in the retrieved context, cites
-  `[Make Model - Section]`, and emits a hard refusal below the reranker
-  threshold.
-- **API + UI:** FastAPI (`app/api.py`) exposes `/ask`, `/health`, `/vehicles`,
-  and serves the **GarageMind web UI** (`web/`) at `/` — a real chat interface
-  wired to `/ask` with citation chips, an expandable source excerpt + deep link,
-  a safety-critical trust indicator, and a calm amber refusal card.
-- **Evaluation (`eval/`):** `run_ir.py` (Recall@k / MRR / NDCG@k against
-  independently-derived gold passages) and `run_ragas.py` (faithfulness / answer
-  relevancy / context precision / recall, judged by the local model).
+Τα embeddings αποθηκεύονται στη βάση:
+
+```text
+ChromaDB
+```
+
+Το Dense Retrieval επιτρέπει στο σύστημα να βρίσκει αποσπάσματα που έχουν παρόμοιο νόημα με την ερώτηση, ακόμη και όταν δεν περιέχουν ακριβώς τις ίδιες λέξεις.
 
 ---
 
-## Requirements
+## 2. BM25 Retrieval
 
-- **Python 3.11** (the ML stack lags on 3.13; use 3.11)
-- **[Ollama](https://ollama.com)** with a chat model pulled
-  (`ollama pull qwen2.5:7b-instruct`)
-- ~5 GB disk for the embedding + reranker models on first run
-- Node.js is **not** required for the core pipeline (only for the optional
-  `mddb/` MarkdownDB index)
+Παράλληλα χρησιμοποιείται BM25 για λεξιλογική αναζήτηση.
+
+Το BM25 είναι ιδιαίτερα χρήσιμο για:
+
+* ονόματα μοντέλων αυτοκινήτων,
+* τεχνικούς όρους,
+* συγκεκριμένα identifiers,
+* ακριβείς λέξεις ή φράσεις.
 
 ---
 
-## Quick start
+## 3. Hybrid Retrieval
+
+Τα αποτελέσματα από:
+
+```text
+Dense Retrieval
++
+BM25 Retrieval
+```
+
+συνδυάζονται μέσω ranking fusion.
+
+Έτσι το σύστημα αξιοποιεί ταυτόχρονα:
+
+* σημασιολογική ομοιότητα,
+* λεξιλογική αντιστοίχιση.
+
+---
+
+## 4. Cross-Encoder Reranking
+
+Τα υποψήφια αποτελέσματα περνούν στη συνέχεια από reranking με το μοντέλο:
+
+```text
+BAAI/bge-reranker-v2-m3
+```
+
+Ο reranker εξετάζει με μεγαλύτερη ακρίβεια τη σχέση μεταξύ της ερώτησης και κάθε υποψήφιου αποσπάσματος.
+
+Με αυτόν τον τρόπο βελτιώνεται η τελική επιλογή context.
+
+---
+
+## 5. Έλεγχος Εμπιστοσύνης
+
+Πριν από τη δημιουργία της απάντησης εφαρμόζεται ένα confidence threshold.
+
+Αν τα αποτελέσματα της ανάκτησης έχουν πολύ χαμηλή σχετικότητα, το σύστημα μπορεί να αποφύγει τη δημιουργία μιας μη τεκμηριωμένης απάντησης.
+
+Ο στόχος είναι η μείωση των hallucinations.
+
+---
+
+## 6. Δημιουργία Απάντησης
+
+Το τελικό context δίνεται στο γλωσσικό μοντέλο:
+
+```text
+Qwen 2.5 7B
+```
+
+το οποίο εκτελείται τοπικά μέσω:
+
+```text
+Ollama
+```
+
+Το μοντέλο χρησιμοποιεί τα ανακτημένα αποσπάσματα για να δημιουργήσει την τελική απάντηση.
+
+---
+
+# Τρέχουσα Ρύθμιση Retrieval
+
+Η βασική πειραματική ρύθμιση του συστήματος είναι:
+
+| Παράμετρος                   |                    Τιμή |
+| ---------------------------- | ----------------------: |
+| Μέγεθος chunk                |              500 tokens |
+| Επικάλυψη chunks             |               60 tokens |
+| Dense retrieval candidates   |                      20 |
+| BM25 candidates              |                      20 |
+| Τελικά reranked αποτελέσματα |                       5 |
+| Refusal threshold            |                    0.15 |
+| Embedding model              |  BAAI/bge-large-en-v1.5 |
+| Reranker                     | BAAI/bge-reranker-v2-m3 |
+| Generation model             |             Qwen 2.5 7B |
+
+Οι τιμές αυτές μπορούν να αλλάξουν μέσω του configuration του project.
+
+---
+
+# Δομή του Repository
+
+```text
+GarageMind-RAG/
+│
+├── app/
+│   ├── generate/
+│   │   └── answer.py
+│   │
+│   ├── ingest/
+│   │   ├── build_index.py
+│   │   ├── bundle_pdf.py
+│   │   ├── crawl.py
+│   │   ├── manifest.py
+│   │   ├── parse_html.py
+│   │   ├── run.py
+│   │   └── to_markdown.py
+│   │
+│   ├── retrieval/
+│   │   ├── citations.py
+│   │   ├── hybrid.py
+│   │   ├── metadata.py
+│   │   └── rerank.py
+│   │
+│   ├── api.py
+│   ├── config.py
+│   └── ui.py
+│
+├── data/
+│   ├── manuals/
+│   ├── models_manifest.csv
+│   ├── models_manifest.json
+│   ├── variants_manifest.csv
+│   └── variants_manifest.json
+│
+├── eval/
+│   ├── derive_gold.py
+│   ├── questions.jsonl
+│   ├── run_ir.py
+│   └── run_ragas.py
+│
+├── scripts/
+│   ├── crawl_full_site.py
+│   └── rag_smoke.py
+│
+├── web/
+│   ├── assets/
+│   ├── API.md
+│   ├── app.js
+│   ├── index.html
+│   └── styles.css
+│
+├── requirements.txt
+├── Makefile
+├── .gitignore
+└── README.md
+```
+
+---
+
+# Dataset Αυτοκινήτων
+
+Το repository περιλαμβάνει ένα ελαφρύ automotive seed corpus.
+
+Τα δεδομένα οργανώνονται ιεραρχικά με βάση:
+
+```text
+κατασκευαστής/
+    μοντέλο/
+        τύπος-αμαξώματος/
+            εύρος-ετών/
+                model-overview.md
+```
+
+Παράδειγμα:
+
+```text
+data/manuals/
+└── ford/
+    └── focus/
+        └── 4-door/
+            └── 2018-2025/
+                └── model-overview.md
+```
+
+Το τρέχον public seed dataset περιλαμβάνει περίπου:
+
+* **130 διαφορετικά μοντέλα αυτοκινήτων**
+* **274 model / variant / year documents**
+* **5 κατασκευαστές**
+
+Οι κατασκευαστές είναι:
+
+* Ford
+* Honda
+* Toyota
+* Volvo
+* Volkswagen
+
+Το corpus παρήγαγε περίπου:
+
+```text
+274 documents
+      ↓
+822 indexed chunks
+```
+
+---
+
+## Σημαντική Σημείωση για το Dataset
+
+Τα αρχεία:
+
+```text
+model-overview.md
+```
+
+που περιλαμβάνονται στο δημόσιο repository αποτελούν κυρίως μια δομημένη βάση δεδομένων μεταδεδομένων και συμβατότητας οχημάτων για ανάπτυξη και δοκιμή του συστήματος.
+
+Δεν αποτελούν πλήρη επίσημα owner manuals των κατασκευαστών.
+
+Η αρχιτεκτονική του συστήματος υποστηρίζει την εισαγωγή και ευρετηρίαση μεγαλύτερων και πληρέστερων τεχνικών εγχειριδίων, όταν αυτά είναι νόμιμα διαθέσιμα.
+
+---
+
+# Indexed Corpus
+
+Ένα αντιπροσωπευτικό build του index παρήγαγε:
+
+| Κατασκευαστής | Documents |  Chunks |
+| ------------- | --------: | ------: |
+| Ford          |        83 |     249 |
+| Honda         |        19 |      57 |
+| Toyota        |        78 |     234 |
+| Volvo         |         4 |      12 |
+| Volkswagen    |        90 |     270 |
+| **Σύνολο**    |   **274** | **822** |
+
+Τα indexes που δημιουργούνται από το σύστημα δεν αποθηκεύονται στο Git repository.
+
+Δημιουργούνται τοπικά από τα αρχικά έγγραφα.
+
+---
+
+# Εγκατάσταση
+
+## 1. Clone του Repository
 
 ```bash
-# 1. Environment (Python 3.11)
-python3.11 -m venv .venv
-.venv/bin/pip install -r requirements.txt
-
-# 2. Local model (Ollama)
-ollama serve &                       # ensure OLLAMA_MODELS points at a mounted path
-ollama pull qwen2.5:7b-instruct
-cp .env.example .env                 # defaults already target Ollama; edit to use DeepSeek
-
-# 3. Index (the corpus already exists under data/manuals/)
-make manifest                        # build the metadata bridge (data/stores/manuals.sqlite)
-make index-brand BRANDS=honda        # index one brand (fast) …
-# make index                         # … or ALL brands (long; resumable, brand-by-brand)
-
-# 4. Ask
-make serve                           # API + UI at http://127.0.0.1:8000/
-#   UI:        http://127.0.0.1:8000/
-#   API docs:  http://127.0.0.1:8000/docs
-
-# 5. Evaluate
-make eval-ir                         # retrieval metrics (Recall@k / MRR / NDCG)
-make eval                            # RAGAS (local judge)
+git clone https://github.com/artopodama/GarageMind-RAG.git
+cd GarageMind-RAG
 ```
 
-`.env` (created for you) points generation at Ollama:
+---
 
+## 2. Δημιουργία Python Virtual Environment
+
+### Windows PowerShell
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
 ```
-DEEPSEEK_API_KEY=ollama
+
+### Linux / macOS
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+---
+
+## 3. Εγκατάσταση Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+# Ρύθμιση Ollama
+
+Το GarageMind χρησιμοποιεί αυτή τη στιγμή το Qwen ως τοπικό Large Language Model μέσω Ollama.
+
+Κατεβάστε το μοντέλο:
+
+```bash
+ollama pull qwen2.5:7b
+```
+
+Μπορείτε να επιβεβαιώσετε ότι έχει εγκατασταθεί με:
+
+```bash
+ollama list
+```
+
+Το OpenAI-compatible endpoint του Ollama είναι συνήθως:
+
+```text
+http://localhost:11434/v1
+```
+
+---
+
+# Configuration
+
+Δημιουργήστε ένα αρχείο:
+
+```text
+.env
+```
+
+στο root directory του project.
+
+Παράδειγμα:
+
+```env
 DEEPSEEK_BASE_URL=http://localhost:11434/v1
-GEN_MODEL=qwen2.5:7b-instruct
-EMBED_MODEL=BAAI/bge-small-en-v1.5
+DEEPSEEK_API_KEY=ollama
+
+GEN_MODEL=qwen2.5:7b
+REASON_MODEL=qwen2.5:7b
+
+EMBED_MODEL=BAAI/bge-large-en-v1.5
 RERANKER=BAAI/bge-reranker-v2-m3
-EMBED_DEVICE=mps
+
+CHUNK_TOKENS=500
+CHUNK_OVERLAP=60
+
+TOP_K_DENSE=20
+TOP_K_BM25=20
+TOP_K_RERANK=5
+
+REFUSAL_SCORE=0.15
 ```
 
-Ask via the API:
+Το πραγματικό αρχείο `.env` δεν πρέπει να αποθηκεύεται στο Git repository.
+
+Για αυτόν τον λόγο περιλαμβάνεται στο `.gitignore`.
+
+---
+
+# Δημιουργία του Retrieval Index
+
+Τα έγγραφα που βρίσκονται στο project μπορούν να μετατραπούν σε retrieval index τοπικά.
+
+Παράδειγμα:
 
 ```bash
-curl -X POST http://127.0.0.1:8000/ask \
-  -H "Content-Type: application/json" \
-  -d '{"question":"What is the recommended tyre pressure?",
-       "make":"Honda","model":"Civic","year":2019}'
+python -m app.ingest.build_index --brands ford,honda,toyota,volvo,vw
 ```
 
-See `web/API.md` for the full `/ask` response shape.
+Η διαδικασία indexing είναι:
 
----
-
-## Current status (what actually runs)
-
-Verified end-to-end in this build:
-
-- Metadata bridge, dense + lexical index, **scoped** hybrid retrieval,
-  cross-encoder rerank, grounded generation with citation, and hard refusal.
-- FastAPI `/ask` + `/health` + `/vehicles`, and the web UI wired to the real
-  backend (grounded answer + citation + amber refusal all render from `/ask`).
-
-**Corpus indexed in this session:** **Honda** — 9 manuals across Civic, CR-V,
-Accord, HR-V (~6,992 chunks). The full corpus (**51,014 files / 427 variants /
-32 brands / 18 GB**) is on disk under `data/manuals/`; `make index` builds every
-brand, resumably. On a 16 GB / MPS laptop, embedding *everything* is a
-multi-hour (~overnight) unattended job — run it in the background; it is
-resumable and stops gracefully if disk runs low.
-
-**Evaluation (Honda set — `eval/questions.jsonl`, 12 questions, 9 in-scope):**
-
-| Metric | Value | Notes |
-|---|---|---|
-| **Recall@5** | **1.000** | retrieval (deterministic) |
-| **MRR** | **0.944** | retrieval (deterministic) |
-| **NDCG@5** | **0.959** | retrieval (deterministic) |
-| RAGAS answer-relevancy | 0.68 | local judge |
-| RAGAS context-precision | 0.98 | local judge |
-| RAGAS faithfulness | n/a | local-judge parse failure (see below) |
-| RAGAS context-recall | n/a | local-judge parse failure (see below) |
-
-Retrieval is strong on this small, illustrative set: the scoped hybrid+rerank
-pipeline surfaces the correct passage in the top 5 every time (Recall@5 = 1.0),
-usually at rank 1 (MRR 0.94). These are the hard, deterministic numbers.
-
-The RAGAS answer-relevancy (0.68) and context-precision (0.98) come out solid.
-**Faithfulness and context-recall return `n/a`**: the local Ollama judge (tried
-at both 3B and 7B) does not reliably emit the strict JSON those two metrics'
-output parsers require (~50 parse failures), so RAGAS reports NaN. This is a
-known limitation of small local judges — a GPT-4-class judge would score them —
-not a pipeline fault. It is why `run_ir.py`'s deterministic metrics are treated
-as the primary quantitative result. (This is a demonstration set, not the full
-100–200-item thesis corpus.)
-
----
-
-## Deviations from the original plan (and why)
-
-- **Local Ollama generation** (`qwen2.5:7b-instruct`) instead of the DeepSeek
-  API — no key needed, fully offline. DeepSeek still works: set `DEEPSEEK_*` in
-  `.env`.
-- **`bge-small-en-v1.5` embeddings** instead of `bge-large` — bge-large
-  thrashed swap on 16 GB RAM (embedding rate collapsed ~10×). The small
-  bi-encoder + the cross-encoder reranker (which does the precision work) keeps
-  retrieval quality high at a fraction of the memory.
-- **sentence-transformers `CrossEncoder`** for reranking instead of
-  FlagEmbedding's `FlagReranker` — the latter calls a tokenizer method removed
-  in transformers 5.x.
-- **In-place indexing over `data/manuals/`** with a SQLite **manifest** bridge,
-  instead of aggregating into a flat `data/markdown/` + MarkdownDB — avoids
-  duplicating 18 GB and sidesteps the unverified `mddb` schema.
-- **Deterministic content-hash chunk ids** so brand builds are safely
-  restartable.
-
----
-
-## Known limitations & next steps
-
-- **Coverage:** only Honda is indexed here — run `make index` for the full set.
-- **Extraction noise:** the crawled Markdown has HTML-extraction spacing
-  artifacts ("kP a", "vehi c le"). Dense retrieval + rerank tolerate it; BM25
-  (exact-token) is hurt more. A text-cleanup pass would lift lexical recall.
-- **Year gaps:** `resolve_manual` returns `None` (unscoped) when no variant
-  covers the requested year (e.g. there is no 2020 Corolla variant). The
-  `/vehicles` endpoint exposes the actual indexed variants; the UI selector
-  could be driven from it to only offer answerable vehicles.
-- **RAGAS judge:** uses the local 7B model — noisier than a GPT-4-class judge;
-  treat those numbers as indicative. `run_ir.py` metrics are the harder numbers.
-- **BM25 at full scale:** BM25Okapi holds the whole tokenized corpus in RAM; for
-  all ~500k chunks consider a disk-backed lexical index or dense-only retrieval.
-
----
-
-## Project layout
-
+```text
+Markdown documents
+        ↓
+Document parsing
+        ↓
+Chunking
+        ↓
+BGE embeddings
+        ↓
+ChromaDB
+        +
+BM25 index
 ```
-app/
-  config.py              # settings (models, hyper-params, paths) via env / .env
-  ingest/
-    manifest.py          # metadata bridge: (make,model,year) -> manual_id  [NEW]
-    build_index.py       # in-place chunk + embed + index (Chroma + BM25), resumable
-    crawl.py, parse_html.py, to_markdown.py, run.py   # corpus crawler (already run)
-  retrieval/
-    metadata.py          # resolve_manual() over manuals.sqlite
-    hybrid.py            # dense + BM25 + RRF, scoped by manual_id
-    rerank.py            # cross-encoder reranker
-    citations.py         # chunk-id -> human-readable source  [NEW]
-  generate/answer.py     # grounded generation + refusal (Ollama / DeepSeek)
-  api.py                 # FastAPI /ask, /health, /vehicles; serves web/
-  ui.py                  # (legacy Streamlit UI)
-web/                     # GarageMind chat UI (HTML/CSS/JS), wired to /ask; see API.md
+
+Τα indexes που δημιουργούνται αποθηκεύονται τοπικά στους αντίστοιχους φακέλους δεδομένων και δεν ανεβαίνουν στο GitHub.
+
+---
+
+# Εκτέλεση του API
+
+Για την εκκίνηση του FastAPI backend:
+
+```bash
+uvicorn app.api:app --reload
+```
+
+Το API είναι διαθέσιμο στη διεύθυνση:
+
+```text
+http://127.0.0.1:8000
+```
+
+Το αυτόματο FastAPI documentation είναι διαθέσιμο στη διεύθυνση:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+---
+
+# Web Interface
+
+Το project περιλαμβάνει ένα lightweight frontend στον φάκελο:
+
+```text
+web/
+```
+
+Το frontend επικοινωνεί με το backend του GarageMind και επιτρέπει στον χρήστη να:
+
+* υποβάλλει ερωτήσεις,
+* επιλέγει στοιχεία οχήματος,
+* λαμβάνει απαντήσεις,
+* και βλέπει τις πληροφορίες που επιστρέφει το σύστημα.
+
+Η διεπαφή έχει υλοποιηθεί με:
+
+* HTML
+* CSS
+* JavaScript
+
+---
+
+# Αξιολόγηση του Συστήματος
+
+Το repository περιλαμβάνει ξεχωριστό evaluation pipeline στον φάκελο:
+
+```text
 eval/
-  questions.jsonl        # labelled question set (gold via derive_gold.py)
-  derive_gold.py         # fills gold_chunks by content match  [NEW]
-  run_ir.py, run_ragas.py
-mddb/build.mjs           # optional MarkdownDB index (Node)
-data/manuals/            # crawled corpus (git-ignored)
-data/stores/             # manuals.sqlite, chroma/, bm25.pkl, chunks.sqlite (git-ignored)
+```
+
+Περιλαμβάνονται τα αρχεία:
+
+```text
+derive_gold.py
+questions.jsonl
+run_ir.py
+run_ragas.py
 ```
 
 ---
 
-## Reproducibility
+## Αξιολόγηση Retrieval
 
-- All model ids and hyper-parameters live in `app/config.py` / `.env`.
-- Generation uses `temperature=0.0`.
-- `make manifest && make index` rebuilds every index from `data/manuals/`.
-- Chunk ids are deterministic (content hash), so re-runs are idempotent.
+Το retrieval pipeline μπορεί να αξιολογηθεί μέσω Information Retrieval metrics όπως:
 
-## Ethics & legal
+* Recall@K
+* Mean Reciprocal Rank
+* nDCG
 
-Owner's manuals are copyrighted works of vehicle manufacturers. This project
-uses them **only** for non-commercial academic research, honours `robots.txt`,
-identifies its crawler honestly, rate-limits requests, collects no personal
-data, and **does not redistribute** the corpus.
+Οι μετρικές αυτές χρησιμοποιούνται για να αξιολογηθεί αν τα σωστά αποσπάσματα βρίσκονται στις πρώτες θέσεις των αποτελεσμάτων.
 
-## Safety
+---
 
-Maintenance advice can be safety-critical. The system cites sources and
-**refuses rather than guesses**, and never invents pressures, torques,
-capacities, or fluid types. Safety-critical answers should be manually reviewed.
+## Αξιολόγηση RAG
 
-## License
+Το project περιλαμβάνει επίσης μηχανισμό αξιολόγησης του τελικού RAG pipeline.
 
-Code: MIT. Corpus: not included and not redistributable.
+Η αξιολόγηση μπορεί να εξετάσει ξεχωριστά:
+
+```text
+Retrieval Quality
+        +
+Generation Quality
+```
+
+και να χρησιμοποιήσει μετρικές σχετικές με:
+
+* Faithfulness
+* Answer Relevancy
+* Context Precision
+* Context Recall
+
+---
+
+# Βασικοί Στόχοι Σχεδιασμού
+
+## Τοπική Εκτέλεση
+
+Το γλωσσικό μοντέλο μπορεί να εκτελείται τοπικά μέσω Ollama.
+
+Με αυτόν τον τρόπο μειώνεται η εξάρτηση από εξωτερικά εμπορικά APIs.
+
+---
+
+## Grounded Generation
+
+Οι απαντήσεις δημιουργούνται με βάση το context που ανακτάται από τη βάση γνώσης.
+
+Ο στόχος είναι να μειωθεί η πιθανότητα δημιουργίας πληροφοριών που δεν υπάρχουν στις πηγές.
+
+---
+
+## Hybrid Retrieval
+
+Το σύστημα συνδυάζει:
+
+```text
+Dense Semantic Retrieval
++
+BM25 Lexical Retrieval
+```
+
+ώστε να αξιοποιεί τα πλεονεκτήματα και των δύο τεχνικών.
+
+---
+
+## Reranking
+
+Ένα ξεχωριστό Cross-Encoder μοντέλο χρησιμοποιείται για την επαναξιολόγηση των αποτελεσμάτων και τη βελτίωση της τελικής επιλογής context.
+
+---
+
+## Refusal Mechanism
+
+Όταν η ανάκτηση πληροφορίας δεν επιστρέφει αποτελέσματα επαρκούς ποιότητας, το σύστημα μπορεί να αποφεύγει τη δημιουργία μη τεκμηριωμένης απάντησης.
+
+---
+
+## Αναπαραγωγιμότητα
+
+Οι generated vector databases και τα indexes δεν αποθηκεύονται στο repository.
+
+Μπορούν να δημιουργηθούν ξανά από το dataset μέσω του indexing pipeline.
+
+---
+
+# Περιορισμοί
+
+Η τρέχουσα έκδοση του GarageMind έχει ορισμένους περιορισμούς:
+
+* Το δημόσιο dataset αποτελεί lightweight development corpus και όχι πλήρη συλλογή επίσημων εγχειριδίων αυτοκινήτων.
+* Η ποιότητα του retrieval εξαρτάται άμεσα από την ποσότητα και την ποιότητα των διαθέσιμων εγγράφων.
+* Η ταχύτητα του συστήματος εξαρτάται από το διαθέσιμο CPU ή GPU.
+* Η τρέχουσα βάση δεδομένων περιλαμβάνει περιορισμένο αριθμό κατασκευαστών.
+* Τεχνικές προδιαγραφές μπορεί να διαφέρουν ανάλογα με το model year, την αγορά, τον κινητήρα και την έκδοση του οχήματος.
+* Οι απαντήσεις που δημιουργούνται αυτόματα δεν πρέπει να αντικαθιστούν την επίσημη τεχνική τεκμηρίωση του κατασκευαστή σε περιπτώσεις που σχετίζονται με ασφάλεια ή συντήρηση.
+
+---
+
