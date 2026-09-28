@@ -49,6 +49,22 @@ def _is_safety_critical(question: str) -> bool:
 def answer(question: str, make: str | None = None, model: str | None = None,
            year: int | None = None, reasoning: bool = False) -> dict:
     manual_id = resolve_manual(make, model, year)
+
+    # If a vehicle was requested but cannot be resolved, do not
+    # search manuals belonging to other vehicles.
+    if make or model or year is not None:
+        if manual_id is None:
+            return {
+                "manual_id": None,
+                "scoped": False,
+                "top_score": 0.0,
+                "safety_critical": _is_safety_critical(question),
+                "text": REFUSAL,
+                "citations": [],
+                "sources": [],
+                "refused": True,
+            }
+
     fused = retrieve(question, manual_id)
     passages, top_score = rerank(question, fused)
 
@@ -110,5 +126,21 @@ def answer(question: str, make: str | None = None, model: str | None = None,
         })
 
     refused = text.strip() == REFUSAL.strip()
-    return {**base, "text": text, "citations": cids, "sources": sources,
-            "top_passage": top_passage, "refused": refused}
+
+    if refused:
+        return {
+            **base,
+            "text": REFUSAL,
+            "citations": [],
+            "sources": [],
+            "refused": True,
+        }
+
+    return {
+        **base,
+        "text": text,
+        "citations": cids,
+        "sources": sources,
+        "top_passage": top_passage,
+        "refused": False,
+    }

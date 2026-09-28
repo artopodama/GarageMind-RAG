@@ -1,0 +1,2 @@
+{"id":"corolla-coverage-2020","query":"What model years does the Toyota Corolla 4-door compatibility seed cover?","make":"Toyota","model":"Corolla","year":2020,"relevant_chunk_prefixes":["toyota/corolla/4-door/2018-2026/model-overview.md::"]}
+{"id":"corolla-safety-note-2020","query":"Does this seed contain vehicle-specific safety-critical specifications?","make":"Toyota","model":"Corolla","year":2020,"relevant_chunk_ids":["toyota/corolla/4-door/2018-2026/model-overview.md::7a0527fde0"]}

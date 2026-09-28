@@ -220,7 +220,14 @@
 
     callAsk(text, v)
       .then(data => { clearInterval(timer); renderApiResult(id, data); })
-      .catch(() => { clearInterval(timer); mockAnswerInto(id, text, v); });
+      .catch(() => {
+        clearInterval(timer);
+        updateMessage(id, {
+          kind: 'refusal',
+          step: undefined,
+          text: 'The assistant is currently unavailable. Please try again later.'
+        });
+      });
   }
 
   function renderApiResult(id, data) {

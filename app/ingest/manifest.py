@@ -126,21 +126,41 @@ def meta_for_variant_dir(vdir: pathlib.Path, manuals_root: pathlib.Path) -> Manu
     )
 
 
-def meta_for_md_path(md_path: pathlib.Path, manuals_root: pathlib.Path) -> ManualMeta:
-    """Derive metadata for a chunk from its ``.md`` file path.
-
-    Used by ``build_index.py`` so every chunk carries the same ``manual_id`` the
-    manifest stores. The variant dir is always the 3rd path segment under root.
-    """
+def meta_for_md_path(md_path: pathlib.Path,
+                     manuals_root: pathlib.Path) -> ManualMeta:
+    """Derive generation-aware metadata from a Markdown file path."""
     rel = md_path.relative_to(manuals_root)
-    brand, model, variant = rel.parts[0], rel.parts[1], rel.parts[2]
-    ys, ye = parse_variant_years(variant)
-    return ManualMeta(
-        manual_id=manual_id_from_parts(brand, model, variant),
-        brand=_slugify(brand), make=brand_to_make(brand), model=_slugify(model),
-        variant=_slugify(variant), year_start=ys, year_end=ye,
-    )
+    parts = rel.parts
 
+    if len(parts) < 4:
+        raise ValueError(f"Unexpected manual path: {rel}")
+
+    brand, model, variant = parts[:3]
+
+    # Actual seed layout:
+    # brand/model/variant/2000-2006/model-overview.md
+    period = None
+    if len(parts) >= 5 and re.fullmatch(
+        r"(?:19|20)\d{2}(?:[-_](?:19|20)\d{2})?",
+        parts[3],
+    ):
+        period = parts[3]
+
+    ys, ye = parse_variant_years(period or variant)
+
+    manual_id = manual_id_from_parts(brand, model, variant)
+    if period:
+        manual_id += f"/{_slugify(period)}"
+
+    return ManualMeta(
+        manual_id=manual_id,
+        brand=_slugify(brand),
+        make=brand_to_make(brand),
+        model=_slugify(model),
+        variant=_slugify(variant),
+        year_start=ys,
+        year_end=ye,
+    )
 
 # --- manifest (compact SQLite; one row per variant) -----------------------
 DDL = """
@@ -159,37 +179,58 @@ CREATE INDEX IF NOT EXISTS idx_scope ON manuals(brand, model, year_start, year_e
 """
 
 
-def build_manifest(manuals_dir: str | None = None, db_path: str | None = None) -> int:
-    """Walk every ``<brand>/<model>/<variant>`` dir and write ``manuals.sqlite``.
-
-    Returns the number of manuals indexed. A variant dir is any directory exactly
-    three levels below ``data/manuals`` that holds at least one ``.md`` file.
-    """
+def build_manifest(manuals_dir: str | None = None,
+                   db_path: str | None = None) -> int:
+    """Build one manifest record per distinct generation-aware manual."""
     manuals_root = pathlib.Path(manuals_dir or SETTINGS.manuals_dir)
     db = pathlib.Path(db_path or SETTINGS.manifest_db)
     db.parent.mkdir(parents=True, exist_ok=True)
-    if db.exists():
-        db.unlink()
 
-    con = sqlite3.connect(db)
-    con.executescript(DDL)
+    grouped = {}
+
+    for md_path in sorted(manuals_root.rglob("*.md")):
+        m = meta_for_md_path(md_path, manuals_root)
+
+        if m.manual_id not in grouped:
+            source_dir = manuals_root.joinpath(*m.manual_id.split("/"))
+
+            grouped[m.manual_id] = {
+                "meta": m,
+                "count": 0,
+                "source_dir": str(source_dir),
+            }
+
+        grouped[m.manual_id]["count"] += 1
+
     rows = []
-    for brand_dir in sorted(p for p in manuals_root.iterdir() if p.is_dir()):
-        for model_dir in sorted(p for p in brand_dir.iterdir() if p.is_dir()):
-            for variant_dir in sorted(p for p in model_dir.iterdir() if p.is_dir()):
-                topics = sum(1 for _ in variant_dir.rglob("*.md"))
-                if topics == 0:
-                    continue
-                m = meta_for_variant_dir(variant_dir, manuals_root)
-                rows.append((m.manual_id, m.brand, m.make, m.model, m.variant,
-                             m.year_start, m.year_end, topics, str(variant_dir)))
-    con.executemany(
-        "INSERT OR REPLACE INTO manuals VALUES (?,?,?,?,?,?,?,?,?)", rows
-    )
-    con.commit()
-    con.close()
-    return len(rows)
 
+    for entry in grouped.values():
+        m = entry["meta"]
+
+        rows.append((
+            m.manual_id,
+            m.brand,
+            m.make,
+            m.model,
+            m.variant,
+            m.year_start,
+            m.year_end,
+            entry["count"],
+            entry["source_dir"],
+        ))
+
+    with sqlite3.connect(db) as con:
+        con.executescript(DDL)
+
+        # Remove outdated records from the previous metadata layout.
+        con.execute("DELETE FROM manuals")
+
+        con.executemany(
+            "INSERT INTO manuals VALUES (?,?,?,?,?,?,?,?,?)",
+            rows,
+        )
+
+    return len(rows)
 
 if __name__ == "__main__":
     n = build_manifest()
